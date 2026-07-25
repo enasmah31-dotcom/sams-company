@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sams Company Dashboard</title>
+<style>
+  :root {
+    --bg: #fafaf9;
+    --card: #ffffff;
+    --border: #e7e5e4;
+    --text: #1c1917;
+    --muted: #78716c;
+    --accent: #2563eb;
+    --done: #16a34a;
+    --working: #d97706;
+    --alert: #dc2626;
+    --idle: #a8a29e;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, "Segoe UI", Tahoma, Arial, sans-serif;
+    padding: 40px 20px;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; }
+  h1 {
+    font-size: 22px;
+    font-weight: 600;
+    margin: 0 0 4px;
+  }
+  .sub {
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 32px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .name { font-weight: 600; font-size: 16px; }
+  .badge {
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    color: #fff;
+  }
+  .badge.done { background: var(--done); }
+  .badge.working { background: var(--working); }
+  .badge.alert { background: var(--alert); }
+  .badge.idle { background: var(--idle); }
+  .badge.error { background: var(--alert); }
+  .summary {
+    font-size: 13.5px;
+    color: var(--text);
+    line-height: 1.6;
+    margin-bottom: 10px;
+    min-height: 40px;
+  }
+  .time {
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .empty {
+    color: var(--muted);
+    font-size: 14px;
+    padding: 40px 0;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Sams Company — لوحة المتابعة</h1>
+    <div class="sub">حالة الموظفين في آخر تشغيل يومي</div>
+    <div id="grid" class="grid"></div>
+  </div>
+
+<script>
+const STATE_LABELS = {
+  idle: "بالانتظار",
+  working: "شغّال الآن",
+  done: "خلّص المهمة",
+  alert: "تنبيه",
+  error: "خطأ"
+};
+
+const EMPLOYEE_ORDER = ["Writer", "Checker", "informations", "Content", "reporter"];
+
+async function load() {
+  const grid = document.getElementById("grid");
+  try {
+    const res = await fetch("data/status.json?_=" + Date.now());
+    const status = await res.json();
+    const keys = Object.keys(status).sort(
+      (a, b) => EMPLOYEE_ORDER.indexOf(a) - EMPLOYEE_ORDER.indexOf(b)
+    );
+
+    if (keys.length === 0) {
+      grid.innerHTML = '<div class="empty">ما فيه بيانات بعد — أول تشغيل ما صار.</div>';
+      return;
+    }
+
+    grid.innerHTML = keys.map(name => {
+      const emp = status[name];
+      const state = emp.state || "idle";
+      const time = emp.updated_at ? new Date(emp.updated_at).toLocaleString("ar-LY") : "-";
+      return `
+        <div class="card">
+          <div class="card-top">
+            <div class="name">${name}</div>
+            <div class="badge ${state}">${STATE_LABELS[state] || state}</div>
+          </div>
+          <div class="summary">${emp.summary || ""}</div>
+          <div class="time">آخر تحديث: ${time}</div>
+        </div>
+      `;
+    }).join("");
+  } catch (e) {
+    grid.innerHTML = '<div class="empty">تعذر تحميل البيانات — تأكد أن أول تشغيل صار وتم رفع data/status.json</div>';
+  }
+}
+
+load();
+setInterval(load, 30000);
+</script>
+</body>
+</html>
