@@ -32,11 +32,11 @@
 
 | اسم الـ Secret        | القيمة                                      |
 |------------------------|----------------------------------------------|
-| `YOUTUBE_API_KEY`      | المفتاح اللي أخذته من Google Cloud Console   |
-| `YOUTUBE_CHANNEL_ID`   | معرف قناتك (يبدأ بـ UC...)                   |
-| `GROQ_API_KEY`         | المفتاح من console.groq.com                  |
+| `YOUTUBE_API_KEY`      |AIzaSyDndq5WTE50Zx5c519AbERyf7hptPjp7SM  |
+| `YOUTUBE_CHANNEL_ID`   |UCbB1oWEzD0R8eRN_q5FlebA                   |
+| `GROQ_API_KEY`         |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                  |
 | `GMAIL_ADDRESS`        | vibng.me@gmail.com                           |
-| `GMAIL_APP_PASSWORD`   | الكود المكون من 16 حرف (App Password)        |
+| `GMAIL_APP_PASSWORD`   |gbvv nhqn wrxq lijf        |
 | `RECIPIENT_EMAIL`      | hitc.ads@gmail.com                           |
 
 > كيف تجيب `YOUTUBE_CHANNEL_ID`: روح لقناتك على يوتيوب ← Customize Channel ←
