@@ -26,14 +26,13 @@ jobs:
 
       - name: Execute Sams Company Core Process
         env:
-          GROQ_API_KEY: ${{ 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 }}
-          YOUTUBE_API_KEY: ${{ AIzaSyDndq5WTE50Zx5c519AbERyf7hptPjp7SM }}
-          YOUTUBE_CHANNEL_ID: ${{ UCbB1oWEzD0R8eRN_q5FlebA }}
-          GMAIL_USER: ${{ vibng.me@gmail.com }}
-          GMAIL_APP_PASSWORD: ${{ gbvv nhqn wrxq lijf }}
-          TARGET_EMAIL: ${{ hitc.ads@gmail.com }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          YOUTUBE_CHANNEL_ID: ${{ secrets.YOUTUBE_CHANNEL_ID }}
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          TARGET_EMAIL: ${{ secrets.TARGET_EMAIL }}
         run: |
-          # البحث عن ملف run_all.py وتشغيله من مكانه الفعلي تلقائيًا
           TARGET_FILE=$(find . -name "run_all.py" -print -quit)
           if [ -n "$TARGET_FILE" ]; then
             cd $(dirname "$TARGET_FILE")
