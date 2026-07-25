@@ -1,0 +1,46 @@
+name: Sams Company Daily Workflow
+
+on:
+  schedule:
+    # 11:00 UTC = 1:00 PM (13:00) Libya Time (EET)
+    - cron: '0 11 * * *'
+  workflow_dispatch: # يتيح لك تشغيل الشركة يدوياً بضغطة زر من تبويب Actions
+
+jobs:
+  run-company-task:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: |
+          cd sams-company
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Execute Sams Company Core Process
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          YOUTUBE_CHANNEL_ID: ${{ secrets.YOUTUBE_CHANNEL_ID }}
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          TARGET_EMAIL: ${{ secrets.TARGET_EMAIL }}
+        run: |
+          cd sams-company
+          python run_all.py
+
+      - name: Commit and Push Updated Status Data
+        run: |
+          git config --global user.name "Sams Company Bot"
+          git config --global user.email "bot@samscompany.local"
+          git add sams-company/data/status.json || true
+          git commit -m "Auto-update status and daily reports" || exit 0
+          git push
